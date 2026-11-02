@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Sumativa - Antología de Informática Básica 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #151b2b;
+            --accent-cyan: #00f3ff;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, .cyber-font {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Top Bar Fija */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: rgba(11, 15, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .top-bar-brand {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+        }
+
+        .top-bar-stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .timer-display {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-container {
+            width: 150px;
+            background: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Contenedores Principales */
+        .container {
+            max-width: 900px;
+            margin: 80px auto 40px auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Login Screen */
+        #login-screen h2 {
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        #login-screen p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .btn {
+            background-color: var(--accent-cyan);
+            color: var(--bg-main);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.85rem 2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert-error {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Encabezado Administrativo REA */
+        .admin-header {
+            border-left: 4px solid var(--accent-cyan);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .admin-header h3 {
+            grid-column: 1 / -1;
+            color: var(--accent-cyan);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-info-item span {
+            color: var(--text-muted);
+        }
+
+        /* Secciones de Examen */
+        .exam-section {
+            display: none;
+        }
+
+        .section-title {
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+        }
+
+        /* Opciones de Selección Única */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .option-label:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .option-label input {
+            accent-color: var(--accent-cyan);
+        }
+
+        /* Correspondencia / Asociación */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .matching-column h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+            font-size: 1.1rem;
+        }
+
+        .matching-item {
+            padding: 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .matching-item.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .matching-item.matched {
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* Respuesta Corta */
+        .short-answer-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        /* Ordenamiento de Procedimiento */
+        .sortable-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sortable-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+
+        .sortable-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-sm:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        /* Navegación y Botones de Examen */
+        .exam-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        /* Modal de Estado / Cuadrícula */
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .grid-item.answered {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .grid-item.pending {
+            background: rgba(255, 51, 102, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Resultados y Retroalimentación */
+        .results-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .score-display {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin: 1rem 0;
+        }
+
+        .feedback-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .feedback-correct {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .feedback-incorrect {
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        @media (max-width: 768px) {
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+            .admin-header {
+                grid-template-columns: 1fr;
+            }
+            .modal-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media print {
+            .top-bar, .exam-navigation, .btn, #login-screen {
+                display: none !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .card {
+                border: 1px solid #ccc;
+                box-shadow: none;
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar Fija -->
+    <div class="top-bar">
+        <div class="top-bar-brand">CEC Monseñor Vittorino Girardi Stellin</div>
+        <div class="top-bar-stats" id="top-bar-stats" style="display: none;">
+            <div>Progreso: <span id="progress-text">0/35</span></div>
+            <div class="progress-container" id="progress-container-bar" style="display: block;">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+            <div class="timer-display" id="timer-display">80:00</div>
+            <button class="btn-sm" onclick="showStatusModal()">Matriz Estado</button>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- MÓDULO DE AUTENTICACIÓN (LOGIN) -->
+        <div id="login-screen" class="card">
+            <h2>Evaluación Sumativa de Informática Básica</h2>
+            <p>Ingrese su correo institucional y contraseña asignada para iniciar la prueba.</p>
+            
+            <div id="login-alert" class="alert alert-error"></div>
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Correo Institucional</label>
+                    <input type="email" id="email" class="form-control" placeholder="e.nombre.apellido@vittorino.ed.cr" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn">Iniciar Evaluación</button>
+            </form>
+        </div>
+
+        <!-- INTERFAZ DE EVALUACIÓN REA (35 PUNTOS) -->
+        <div id="exam-screen" class="card exam-section">
+            
+            <!-- Encabezado Administrativo REA -->
+            <div class="admin-header card">
+                <h3>Datos Administrativos e Instrumento</h3>
+                <div class="admin-info-item"><span>Institución:</span> Centro Educativo Católico Monseñor Vittorino Girardi Stellin</div>
+                <div class="admin-info-item"><span>Subárea:</span> Informática Básica</div>
+                <div class="admin-info-item"><span>Docente:</span> Ing. Jhonathan Juárez Rivas</div>
+                <div class="admin-info-item"><span>Estudiante:</span> <span id="lbl-student-name">-</span></div>
+                <div class="admin-info-item"><span>Correo:</span> <span id="lbl-student-email">-</span></div>
+                <div class="admin-info-item"><span>Valor / Porcentaje:</span> 35 Puntos / 25%</div>
+                <div class="admin-info-item"><span>Intento Actual:</span> <span id="lbl-attempt-number">-</span></div>
+            </div>
+
+            <form id="exam-form" onsubmit="handleExamSubmit(event)">
+                
+                <!-- I PARTE: SELECCIÓN ÚNICA (20 PUNTOS) -->
+                <div class="section-container">
+                    <h2 class="section-title">I Parte: Selección Única (20 puntos)</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Seleccione la opción correcta para cada uno de los siguientes enunciados basándose estrictamente en la antología[cite: 1].</p>
+                    <div id="part1-container"></div>
+                </div>
+
+                <!-- II PARTE: CORRESPONDENCIA (5 PUNTOS) -->
+                <div class="section-container" style="margin-top: 3rem;">
+                    <h2 class="section-title">II Parte: Correspondencia (5 puntos)</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Asocie los conceptos de la Columna A con su definición correcta en la Columna B (incluye un distractor)[cite: 1]. Haga clic en un elemento de la izquierda y luego en su pareja de la derecha.</p>
+                    <div class="matching-container">
+                        <div class="matching-column">
+                            <h4>Columna A (Conceptos)</h4>
+                            <div id="matching-col-a"></div>
+                        </div>
+                        <div class="matching-column">
+                            <h4>Columna B (Definiciones)</h4>
+                            <div id="matching-col-b"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- III PARTE: RESPUESTA CORTA (5 PUNTOS) -->
+                <div class="section-container" style="margin-top: 3rem;">
+                    <h2 class="section-title">III Parte: Respuesta Corta (5 puntos)</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Escriba de forma precisa el término técnico solicitado en cada enunciado[cite: 1].</p>
+                    <div id="part3-container"></div>
+                </div>
+
+                <!-- IV PARTE: ORDENAMIENTO DE PROCEDIMIENTO (5 PUNTOS) -->
+                <div class="section-container" style="margin-top: 3rem;">
+                    <h2 class="section-title">IV Parte: Ordenamiento de Procedimiento (5 puntos)</h2>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Organice los siguientes pasos del procedimiento técnico en el orden correcto utilizando los botones de desplazamiento[cite: 1].</p>
+                    <div class="sortable-list" id="sortable-container"></div>
+                </div>
+
+                <div class="exam-navigation">
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 2rem;">Finalizar y Entregar Prueba</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PANTALLA DE RESULTADOS Y RETROALIMENTACIÓN -->
+        <div id="results-screen" class="card exam-section results-card">
+            <h2 class="cyber-font" style="font-size: 2.5rem; color: var(--accent-cyan);">Evaluación Finalizada</h2>
+            <p style="color: var(--text-muted);">Los resultados oficiales han sido procesados y enviados al registro docente.</p>
+            
+            <div class="score-display" id="final-score-display">0 / 35</div>
+            
+            <div style="display: flex; justify-content: center; gap: 2rem; margin: 1.5rem 0;">
+                <div>Nota Base 100: <strong id="res-nota" style="color: var(--accent-cyan);">0</strong></div>
+                <div>Porcentaje Obt. (25%): <strong id="res-porcentaje" style="color: var(--accent-green);">0%</strong></div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                <button class="btn" onclick="window.print()" style="width: auto;">Descargar Comprobante / Imprimir PDF</button>
+            </div>
+
+            <div id="detailed-feedback-container" style="margin-top: 3rem; text-align: left;">
+                <h3 class="section-title">Desglose y Retroalimentación Oficial</h3>
+                <div id="feedback-list"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal de Matriz de Estado -->
+    <div id="status-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
+        <div class="card" style="width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto;">
+            <h3 style="color: var(--accent-cyan); margin-bottom: 1rem;">Matriz de Estado de Reactivos</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Verde: Respondido | Rojo: Pendiente. Haga clic para saltar.</p>
+            <div class="modal-grid" id="modal-grid-items"></div>
+            <button class="btn-sm" onclick="closeStatusModal()" style="width: 100%; margin-top: 1rem;">Cerrar Matriz</button>
+        </div>
+    </div>
+
+    <script>
+        // Lista Oficial de Estudiantes y Credenciales
+        const officialStudents = [
+            { email: "e.mathias.araya@vittorino.ed.cr", name: "Mathias Araya" },
+            { email: "e.bayrongerardo.arrieta@vittorino.ed.cr", name: "Bayron Gerardo Arrieta" },
+            { email: "e.nathaly.baltodano@vittorino.ed.cr", name: "Nathaly Baltodano" },
+            { email: "e.cristianfernando.campos@vittorino.ed.cr", name: "Cristian Fernando Campos" },
+            { email: "e.thiagoandres.chavarria@vittorino.ed.cr", name: "Thiago Andrés Chavarría" },
+            { email: "e.ianandres.fallas@vittorino.ed.cr", name: "Ian Andrés Fallas" },
+            { email: "e.georgeanderson.garcia@vittorino.ed.cr", name: "George Anderson García" },
+            { email: "e.frankantonio.gomez@vittorino.ed.cr", name: "Frank Antonio Gómez" },
+            { email: "e.maxwellsebastian.matarrita@vittorino.ed.cr", name: "Maxwell Sebastián Matarrita" },
+            { email: "e.brianakarina.mendoza@vittorino.ed.cr", name: "Briana Karina Mendoza" },
+            { email: "e.marybeth.obando@vittorino.ed.cr", name: "Marybeth Obando" },
+            { email: "e.reichellariana.obregon@vittorino.ed.cr", name: "Reichell Ariana Obregón" },
+            { email: "e.krystelsofia.porras@vittorino.ed.cr", name: "Krystel Sofía Porras" },
+            { email: "e.isaac.rivas@vittorino.ed.cr", name: "Isaac Rivas" },
+            { email: "e.dannacamila.rodriguez@vittorino.ed.cr", name: "Danna Camila Rodríguez" },
+            { email: "e.tonyalberto.rodriguez@vittorino.ed.cr", name: "Tony Alberto Rodríguez" },
+            { email: "e.santiagoyamil.rosales@vittorino.ed.cr", name: "Santiago Yamil Rosales" },
+            { email: "e.alexander.ugarte@vittorino.ed.cr", name: "Alexander Ugarte" },
+            { email: "e.meredithesther.valerio@vittorino.ed.cr", name: "Meredith Esther Valerio" },
+            { email: "e.kiaraceleste.zamora@vittorino.ed.cr", name: "Kiara Celeste Zamora" }
+        ];
+
+        // URL de Google Apps Script (Reemplazar tras desplegar)
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz.../exec";
+
+        // Datos del Examen basados estrictamente en el texto adjunto (Antología 2026)
+        const examData = {
+            part1: [
+                { id: 1, text: "¿Cómo se define una computadora según el material de estudio?", options: ["A) Un dispositivo electrónico que recibe datos, los procesa siguiendo instrucciones, puede guardarlos y presenta resultados.", "B) Una máquina exclusivamente dedicada al cálculo matemático avanzado en redes.", "C) Un equipo mecánico que almacena energía y reproduce contenidos en línea."], answer: 0 },
+                { id: 2, text: "En la analogía de la receta descrita en el Módulo 1, ¿a qué equivalen los ingredientes?", options: ["A) Al programa o instrucciones", "B) A los datos", "C) Al plato terminado o resultado"], answer: 1 },
+                { id: 3, text: "¿Cuáles son las cuatro etapas del ciclo básico de la información?", options: ["A) Captura, transmisión, almacenamiento y eliminación", "B) Entrada, procesamiento, almacenamiento y salida", "C) Compilación, ejecución, depuración y entrega"], answer: 1 },
+                { id: 4, text: "¿Cuál de las siguientes opciones describe correctamente al Hardware?", options: ["A) Las partes físicas que se pueden tocar, como teclado, pantalla o memoria", "B) El conjunto de programas y aplicaciones instaladas en la nube", "C) Las directrices de seguridad y normas de convivencia digital"], answer: 0 },
+                { id: 5, text: "De acuerdo con las normas de manipulación segura, ¿cómo se debe realizar el traslado de portátiles?", options: ["A) Levantándolos firmemente por el cable o la pantalla abierta", "B) Cerrados y sujetos con ambas manos", "C) Transportándolos encendidos sobre superficies húmedas"], answer: 1 },
+                { id: 6, text: "¿Qué función cumple un dispositivo periférico en un sistema informático?", options: ["A) Procesar de forma centralizada todas las operaciones lógicas de la red", "B) Permitir introducir datos en una computadora o recibir información de ella", "C) Suministrar energía eléctrica continua a los componentes internos"], answer: 1 },
+                { id: 7, text: "¿Por qué una pantalla táctil se clasifica como un dispositivo mixto?", options: ["A) Porque utiliza exclusivamente tecnología inalámbrica Bluetooth", "B) Porque recibe toques (entrada) y muestra contenido (salida)", "C) Porque almacena datos de forma persistente sin requerir energía"], answer: 1 },
+                { id: 8, text: "¿Cuál componente interno se compara analógicamente con las calles de una ciudad que conectan distintos lugares?", options: ["A) La tarjeta madre o placa base", "B) La fuente de alimentación (PSU)", "C) La memoria RAM"], answer: 0 },
+                { id: 9, text: "¿Qué característica principal define a la memoria RAM?", options: ["A) Es persistente y guarda los archivos aunque el equipo esté apagado", "B) Es volátil; mantiene temporalmente datos y programas en uso y se vacía al apagar", "C) Se encarga exclusivamente de procesar gráficos y cálculos en paralelo"], answer: 1 },
+                { id: 10, text: "¿Qué función realiza la unidad aritmético-lógica (ALU) dentro de la CPU?", options: ["A) Controla el tráfico de red mediante reglas de seguridad", "B) Realiza operaciones matemáticas y comparaciones lógicas", "C) Almacena permanentemente el sistema operativo"], answer: 1 },
+                { id: 11, text: "¿Cuál es la función principal del sistema operativo?", options: ["A) Diseñar gráficos vectoriales y páginas web en formato HTML5", "B) Administrar recursos y ofrecer plataforma para aplicaciones", "C) Cifrar documentos institucionales para exigir rescates económicos"], answer: 1 },
+                { id: 12, text: "¿Cómo se define el software de código abierto?", options: ["A) Aquel que limita estrictamente el acceso al código fuente y prohíbe modificaciones", "B) Aquel que permite estudiar el código y, según su licencia, usarlo, modificarlo y compartirlo", "C) Aquel que es obligatoriamente gratuito y 100% inmune a cualquier tipo de malware"], answer: 1 },
+                { id: 13, text: "¿Qué amenaza de ciberseguridad se presenta como legítima para engañar al usuario, como un programa falso gratuito?", options: ["A) Un gusano de red", "B) Un troyano", "C) Un ransomware"], answer: 1 },
+                { id: 14, text: "¿Qué función cumple una herramienta antimalware?", options: ["A) Busca, bloquea o pone en cuarentena amenazas informáticas", "B) Controla de forma exclusiva el tráfico entrante de la red local", "C) Genera contraseñas automáticas de un solo uso mediante MFA"], answer: 0 },
+                { id: 15, text: "¿Qué es la Inteligencia Artificial generativa según el Módulo 6?", options: ["A) Un sistema operativo de código abierto para dispositivos móviles", "B) Un mecanismo que produce contenido nuevo (texto, imágenes, audio o código) a partir de instrucciones", "C) Un disco duro de estado sólido de alta velocidad basado en NVMe"], answer: 1 },
+                { id: 16, text: "¿Qué caracteriza al almacenamiento magnético como los discos duros HDD?", options: ["A) Guarda datos mediante cambios magnéticos en una superficie o platos giratorios mecánicos", "B) Utiliza exclusivamente chips de memoria flash sin piezas móviles", "C) Emplea un rayo láser sobre discos ópticos de policarbonato"], answer: 0 },
+                { id: 17, text: "¿Qué es un módulo SSD M.2 según el Módulo 7?", options: ["A) Una cinta magnética para copias de seguridad de gran volumen", "B) Un módulo compacto que se instala en una ranura compatible, utilizando en ocasiones el protocolo NVMe", "C) Un disco óptico de alta definición para lectura láser"], answer: 1 },
+                { id: 18, text: "¿Qué función cumple la fuente de alimentación (PSU) dentro del hardware interno?", options: ["A) Convierte la corriente de entrada en los voltajes de corriente continua que requieren los componentes", "B) Retira y mueve el calor para mantener temperaturas adecuadas", "C) Conecta el procesador con los periféricos de entrada y salida"], answer: 0 },
+                { id: 19, text: "¿Qué precaución básica se debe tener obligatoriamente con la fuente de alimentación?", options: ["A) Nunca se debe abrir, ya que puede conservar voltajes peligrosos incluso desconectada", "B) Se debe limpiar semanalmente con un paño húmedo sin apagar el equipo", "C) Se puede manipular directamente sin protección antiestática"], answer: 0 },
+                { id: 20, text: "¿Qué es la Autenticación Multifactor (MFA)?", options: ["A) Un protocolo de red para conectar impresoras inalámbricas", "B) Un método que pide dos o más pruebas para verificar una identidad", "C) Un sistema de archivos en la nube con permisos compartidos"], answer: 1 }
+            ],
+            part2: {
+                premises: [
+                    { id: "A1", text: "CPU (Unidad Central de Procesamiento)" },
+                    { id: "A2", text: "Phishing" },
+                    { id: "A3", text: "IoT (Internet de las cosas)" },
+                    { id: "A4", text: "Firewall" },
+                    { id: "A5", text: "Ransomware" }
+                ],
+                definitions: [
+                    { id: "B1", text: "Bloquea o cifra datos y exige dinero; pagar no garantiza recuperarlos." },
+                    { id: "B2", text: "Sistema que controla tráfico de red mediante reglas." },
+                    { id: "B3", text: "Ejecuta instrucciones y coordina operaciones generales." },
+                    { id: "B4", text: "Objeto físico conectado que recoge o intercambia datos." },
+                    { id: "B5", text: "Mensaje o sitio falso que intenta robar datos." },
+                    { id: "B6", text: "Software malicioso diseñado para replicarse mediante correos masivos." // Distractor
+                ],
+                correctPairs: { "A1": "B3", "A2": "B5", "A3": "B4", "A4": "B2", "A5": "B1" }
+            },
+            part3: [
+                { id: 1, text: "Término que designa a la parte física de un sistema informático que se puede tocar.", answer: "hardware" },
+                { id: 2, text: "Nombre de la memoria rápida y temporal que se vacía habitualmente al apagar el equipo.", answer: "ram" },
+                { id: 3, text: "Componente interno especializado en procesar gráficos y numerosas operaciones paralelas.", answer: "gpu" },
+                { id: 4, text: "Nombre del software que administra recursos y ofrece una plataforma para las aplicaciones.", answer: "sistema operativo" },
+                { id: 5, text: "Unidad especializada en acelerar ciertas tareas de inteligencia artificial en equipos compatibles.", answer: "npu" }
+            ],
+            part4: {
+                steps: [
+                    { id: 1, text: "Apagar el equipo informático por completo." },
+                    { id: 2, text: "Desconectar el equipo de la toma de corriente eléctrica." },
+                    { id: 3, text: "Seguir el procedimiento técnico apropiado y utilizar protección contra descargas electrostáticas." },
+                    { id: 4, text: "Evitar tocar contactos metálicos o circuitos internos sin protección adecuada." },
+                    { id: 5, text: "Informar al docente o personal técnico ante cualquier anomalía u olor a quemado." }
+                ]
+            }
+        };
+
+        let currentUser = null;
+        let currentAttempt = 1;
+        let selectedMatchingA = null;
+        let userMatchingAnswers = {};
+        let currentSortableOrder = [];
+
+        // Inicialización
+        window.addEventListener('DOMContentLoaded', () => {
+            currentSortableOrder = [...examData.part4.steps].sort(() => Math.random() - 0.5);
+            renderExamContent();
+        });
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('email').value.trim().toLowerCase();
+            const passInput = document.getElementById('password').value.trim();
+            const alertBox = document.getElementById('login-alert');
+
+            const student = officialStudents.find(s => s.email === emailInput);
+            if (!student) {
+                alertBox.textContent = "Correo institucional no autorizado en la lista oficial.";
+                alertBox.style.display = "block";
+                return;
+            }
+
+            if (passInput !== "Casa1234") {
+                alertBox.textContent = "Contraseña incorrecta.";
+                alertBox.style.display = "block";
+                return;
+            }
+
+            // Control de Intentos en localStorage
+            const attemptsKey = `attempts_${emailInput}`;
+            const storedAttempts = parseInt(localStorage.getItem(attemptsKey) || "0");
+
+            if (storedAttempts >= 2) {
+                alertBox.textContent = "Acceso bloqueado: Ha agotado el límite de 2 intentos permitidos para esta evaluación.";
+                alertBox.style.display = "block";
+                return;
+            }
+
+            currentAttempt = storedAttempts + 1;
+            currentUser = student;
+
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            sessionStorage.setItem('currentAttempt', currentAttempt);
+
+            // Transición de pantallas
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('exam-screen').style.display = 'block';
+            document.getElementById('top-bar-stats').style.display = 'flex';
+
+            document.getElementById('lbl-student-name').textContent = currentUser.name;
+            document.getElementById('lbl-student-email').textContent = currentUser.email;
+            document.getElementById('lbl-attempt-number').textContent = `${currentAttempt} de 2`;
+
+            startTimer(80 * 60); // 80 minutos
+        }
+
+        function renderExamContent() {
+            // Render Part 1
+            const p1Container = document.getElementById('part1-container');
+            examData.part1.forEach((q, idx) => {
+                let html = `<div class="question-card"><div class="question-text">${idx + 1}. ${q.text}</div><div class="options-list">`;
+                q.options.forEach((opt, oIdx) => {
+                    html += `<label class="option-label"><input type="radio" name="q1_${q.id}" value="${oIdx}"> ${opt}</label>`;
+                });
+                html += `</div></div>`;
+                p1Container.innerHTML += html;
+            });
+
+            // Render Part 2 (Columna A y B)
+            const colA = document.getElementById('matching-col-a');
+            const colB = document.getElementById('matching-col-b');
+            
+            examData.part2.premises.forEach(p => {
+                colA.innerHTML += `<div class="matching-item" id="premise_${p.id}" onclick="selectPremise('${p.id}')">${p.text}</div>`;
+            });
+
+            // Mezclar definiciones B
+            const shuffledDefs = [...examData.part2.definitions].sort(() => Math.random() - 0.5);
+            shuffledDefs.forEach(d => {
+                colB.innerHTML += `<div class="matching-item" id="def_${d.id}" onclick="selectDefinition('${d.id}')">${d.text}</div>`;
+            });
+
+            // Render Part 3
+            const p3Container = document.getElementById('part3-container');
+            examData.part3.forEach((q, idx) => {
+                p3Container.innerHTML += `<div class="question-card"><div class="question-text">${idx + 1}. ${q.text}</div><input type="text" class="short-answer-input" id="q3_${q.id}" placeholder="Escriba su respuesta técnica..."></div>`;
+            });
+
+            // Render Part 4
+            renderSortable();
+        }
+
+        function renderSortable() {
+            const container = document.getElementById('sortable-container');
+            container.innerHTML = '';
+            currentSortableOrder.forEach((step, idx) => {
+                container.innerHTML += `
+                    <div class="sortable-item">
+                        <span>${idx + 1}. ${step.text}</span>
+                        <div class="sortable-controls">
+                            <button type="button" class="btn-sm" onclick="moveStep(${idx}, -1)">▲</button>
+                            <button type="button" class="btn-sm" onclick="moveStep(${idx}, 1)">▼</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function moveStep(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < currentSortableOrder.length) {
+                const temp = currentSortableOrder[index];
+                currentSortableOrder[index] = currentSortableOrder[newIndex];
+                currentSortableOrder[newIndex] = temp;
+                renderSortable();
+            }
+        }
+
+        function selectPremise(id) {
+            document.querySelectorAll('#matching-col-a .matching-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`premise_${id}`).classList.add('selected');
+            selectedMatchingA = id;
+        }
+
+        function selectDefinition(id) {
+            if (!selectedMatchingA) return;
+            userMatchingAnswers[selectedMatchingA] = id;
+            
+            document.querySelectorAll('#matching-col-a .matching-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`premise_${selectedMatchingA}`).classList.add('matched');
+            document.getElementById(`def_${id}`).classList.add('matched');
+            selectedMatchingA = null;
+        }
+
+        let timerSeconds = 80 * 60;
+        function startTimer(seconds) {
+            timerSeconds = seconds;
+            const timerDisplay = document.getElementById('timer-display');
+            const interval = setInterval(() => {
+                const mins = Math.floor(timerSeconds / 60);
+                const secs = timerSeconds % 60;
+                timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                if (timerSeconds <= 0) {
+                    clearInterval(interval);
+                    alert("El tiempo reglamentario ha expirado. El examen se enviará automáticamente.");
+                    submitExamData();
+                }
+                timerSeconds--;
+            }, 1000);
+        }
+
+        function showStatusModal() {
+            const modal = document.getElementById('status-modal');
+            const grid = document.getElementById('modal-grid-items');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 35; i++) {
+                grid.innerHTML += `<div class="grid-item answered">${i}</div>`;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeStatusModal() {
+            document.getElementById('status-modal').style.display = 'none';
+        }
+
+        function handleExamSubmit(event) {
+            event.preventDefault();
+            if (confirm("¿Está seguro de finalizar y enviar su evaluación? Esta acción no se puede deshacer.")) {
+                submitExamData();
+            }
+        }
+
+        function submitExamData() {
+            let totalPoints = 0;
+            let detailedResults = [];
+
+            // Calificar Parte 1 (20 pts)
+            examData.part1.forEach((q) => {
+                const selected = document.querySelector(`input[name="q1_${q.id}"]:checked`);
+                const userAns = selected ? parseInt(selected.value) : -1;
+                const isCorrect = userAns === q.answer;
+                if (isCorrect) totalPoints += 1;
+                detailedResults.push({ item: `Parte I - Q${q.id}`, correct: isCorrect, expected: q.options[q.answer], user: userAns !== -1 ? q.options[userAns] : "Sin responder" });
+            });
+
+            // Calificar Parte 2 (5 pts)
+            Object.keys(examData.part2.correctPairs).forEach((premiseId) => {
+                const expectedDef = examData.part2.correctPairs[premiseId];
+                const userDef = userMatchingAnswers[premiseId];
+                const isCorrect = userDef === expectedDef;
+                if (isCorrect) totalPoints += 1;
+                detailedResults.push({ item: `Parte II - ${premiseId}`, correct: isCorrect, expected: expectedDef, user: userDef || "Sin responder" });
+            });
+
+            // Calificar Parte 3 (5 pts)
+            examData.part3.forEach((q) => {
+                const val = (document.getElementById(`q3_${q.id}`).value || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const expectedNorm = q.answer.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const isCorrect = val === expectedNorm;
+                if (isCorrect) totalPoints += 1;
+                detailedResults.push({ item: `Parte III - Q${q.id}`, correct: isCorrect, expected: q.answer, user: document.getElementById(`q3_${q.id}`).value });
+            });
+
+            // Calificar Parte 4 (5 pts)
+            currentSortableOrder.forEach((step, idx) => {
+                const expectedIndex = step.id - 1;
+                const isCorrect = idx === expectedIndex;
+                if (isCorrect) totalPoints += 1;
+                detailedResults.push({ item: `Parte IV - Paso ${step.id}`, correct: isCorrect, expected: `Posición ${step.id}`, user: `Posición ${idx + 1}` });
+            });
+
+            const notaBase100 = Math.round((totalPoints / 35) * 100);
+            const porcentajeObtenido = parseFloat(((totalPoints / 35) * 25).toFixed(2));
+
+            // Actualizar Intentos en localStorage
+            const attemptsKey = `attempts_${currentUser.email}`;
+            localStorage.setItem(attemptsKey, currentAttempt);
+
+            // Mostrar Resultados en Pantalla
+            document.getElementById('exam-screen').style.display = 'none';
+            document.getElementById('results-screen').style.display = 'block';
+            document.getElementById('final-score-display').textContent = `${totalPoints} / 35`;
+            document.getElementById('res-nota').textContent = notaBase100;
+            document.getElementById('res-porcentaje').textContent = `${porcentajeObtenido}%`;
+
+            const feedbackList = document.getElementById('feedback-list');
+            detailedResults.forEach(res => {
+                feedbackList.innerHTML += `
+                    <div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px;">
+                        <strong>${res.item}</strong> 
+                        <span class="feedback-badge ${res.correct ? 'feedback-correct' : 'feedback-incorrect'}">${res.correct ? 'Correcto (+1)' : 'Incorrecto (0)'}</span>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Tu respuesta: ${res.user} | Respuesta esperada: ${res.expected}</div>
+                    </div>
+                `;
+            });
+
+            // Enviar Datos al Backend de Google Apps Script
+            const payload = {
+                email: currentUser.email,
+                name: currentUser.name,
+                attempt: currentAttempt,
+                totalPoints: totalPoints,
+                score100: notaBase100,
+                percentage: porcentajeObtenido,
+                details: detailedResults
+            };
+
+            fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                console.log("Datos enviados correctamente al backend.");
+            }).catch(err => {
+                console.error("Error al enviar datos:", err);
+            });
+        }
+    </script>
+</body>
+</html>
